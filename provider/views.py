@@ -2,18 +2,23 @@ from django.shortcuts import render
 from . models import *
 from . serializers import *
 from rest_framework import viewsets
-from .permissions import *
+from .permissions import CustomerProfilePermission , ProviderProfilePermission , PermissionProviderForAdmin
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
-from django.db.models import Sum
+from django.db.models import Sum , Avg
 from decimal import Decimal
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter, OrderingFilter
 # Create your views here.
 class CustomerViewSet(viewsets.ModelViewSet):
     queryset=CustomerProfile.objects.all()
     serializer_class = CustomerSerializer
     permission_classes = [CustomerProfilePermission]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    search_fields = [ "user__full_name"]
+    ordering_fields = ["created_at"] 
 
     # Disable list view
     def list(self, request, *args, **kwargs):
@@ -56,6 +61,10 @@ class ProviderViewSet(viewsets.ModelViewSet):
     queryset=ProviderProfile.objects.all()
     serializer_class=ProviderSerializer
     permission_classes = [ProviderProfilePermission]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    search_fields = [ "user__full_name", "city"]
+    filterset_fields = [ "is_available", "is_verified", "city","service",]
+    ordering_fields = [ "average_rating", "total_jobs_completed","created_at"]    
 # No one can see list everyone just can see and CRUD their own profile ....
     def list(self, request, *args, **kwargs):
         return Response(
@@ -196,10 +205,67 @@ class ProviderViewSet(viewsets.ModelViewSet):
             raise  ValidationError("Cnic Number and Cnic image is required ...")
         profile.cnic_image=cnic_image
         profile.cnic_number=cnic_number
-        # profile.is_verified=True
+        profile.is_verified=True
         profile.save()
         return Response({
             "meassage" : "Profile verified successfully ..." ,
             "is_verified": profile.is_verified
         })
+    @action(detail=False , methods=['GET'] , url_path='uploaded_documents')
+    def Uploaded_documents(self , request):
+        user=request.user
+        profile=ProviderProfile.objects.filter(user=user).first()
+        if not profile:
+            return Response(
+                {"message" : "Profile not found"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        return Response({
+            "Profile-image":profile.profile_image.url if profile.profile_image else None,
+            "cnic_image" :profile.cnic_image.url if profile.cnic_image else None
+        })
+   
 #    python manage.py runserver    
+
+
+
+
+
+
+
+class AdminEndpoints(viewsets.ModelViewSet):
+    queryset = ProviderProfile.objects.filter(is_deleted=False)
+    serializer_class = ProviderSerializer
+    permission_classes = [PermissionProviderForAdmin]
+    
+
+
+    # action to get the list of all providers only accessale for admin
+    @action(detail=False, methods=['GET'], url_path='list_provider')
+    def list_provider(self, request):
+        list_provider=ProviderProfile.objects.filter(is_deleted=False)
+        serializer = ProviderSerializer(list_provider, many=True, context={'request': request})
+        return Response({
+            "provider_list": serializer.data
+        })
+    # action to get the list of all vetrified providers only accessale for admin
+    @action(detail=False, methods=['GET'], url_path='verified_providers')
+    def list_provider(self, request):
+        list_provider=ProviderProfile.objects.filter(is_deleted=False ,is_verified=True)
+        serializer = ProviderSerializer(list_provider, many=True, context={'request': request})
+        return Response({
+            "Total Verified Provider Count":list_provider.count(),
+            "provider_list": serializer.data
+        })
+   # action to get the list of all block providers only accessale for admin
+    @action(detail=False, methods=['GET'], url_path='block_providers')
+    def list_provider(self, request):
+        list_provider=ProviderProfile.objects.filter(is_blocked=True)
+        serializer = ProviderSerializer(list_provider, many=True, context={'request': request})
+        return Response({
+            "Total Block Provider Count":list_provider.count(),
+            "provider_list": serializer.data
+        })
+
+
+    # python manage.py runserver

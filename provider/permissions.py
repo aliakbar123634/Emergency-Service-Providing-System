@@ -30,3 +30,13 @@ class ProviderProfilePermission(BasePermission):
         if request.method in ["GET", "PATCH", "POST","DELETE"]:
             return obj.user == request.user
         return False        
+    
+
+
+class PermissionProviderForAdmin(BasePermission):
+    def has_permission(self, request, view):
+        return (
+            request.method == "GET"
+            and request.user.is_authenticated
+            and request.user.role == "admin"
+        )

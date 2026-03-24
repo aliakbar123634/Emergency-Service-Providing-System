@@ -4,7 +4,10 @@ from . serializers import *
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
-from .permissions import *
+from .permissions import AdminAllowOnly
+from django_filters.rest_framework import DjangoFilterBackend
+# from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter, OrderingFilter
 # Create your views here.
 
 class ServiceCategoryView(APIView):
@@ -87,4 +90,4 @@ class Deactivate_Service(APIView):
         return Response("Deactivated successfully .....")        
         
 
-        
+    #   python manage.py runserver    

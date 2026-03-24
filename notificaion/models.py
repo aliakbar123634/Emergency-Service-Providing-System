@@ -20,3 +20,4 @@ class Notification(models.Model):
 
 #   python manage.py makemigrations notificaion
 #   python manage.py migrate
+#   python manage.py runserver

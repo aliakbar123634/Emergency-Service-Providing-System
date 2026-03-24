@@ -2,7 +2,7 @@
 from rest_framework import viewsets
 from . serializers import *
 from . models import *
-from . permissions import *
+from . permissions import onlyUserpermission
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.decorators import api_view , permission_classes
 from rest_framework.response import Response 

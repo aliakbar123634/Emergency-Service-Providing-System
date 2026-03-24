@@ -16,8 +16,6 @@ class WalletTransaction(models.Model):
     def __str__(self):
         return f"{self.transaction_type} {self.amount}"
 
-
-
 class Payment(models.Model):
     payment_status=(
         ('pending' , 'pending'),
@@ -32,7 +30,6 @@ class Payment(models.Model):
     status=models.CharField(max_length=15 , choices=payment_status , default="pending")
     paid_at=models.DateTimeField(null=True, blank=True)
     created_at=models.DateTimeField(auto_now_add=True)
-
     def __str__(self):
         return f"Payment for {self.servicerequest.id}"
     

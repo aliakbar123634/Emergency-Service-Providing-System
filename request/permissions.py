@@ -3,9 +3,7 @@ from rest_framework.permissions import BasePermission
 
 
 class CreateRequestOnlyCustomer(BasePermission):
-
     def has_permission(self, request, view):
-
         return (
             request.user and
             request.user.is_authenticated and
@@ -14,9 +12,7 @@ class CreateRequestOnlyCustomer(BasePermission):
 
 
 class OwnerToSeeAllRequests(BasePermission):
-
     def has_permission(self, request, view):
-
         return (
             request.user and
             request.user.is_authenticated and

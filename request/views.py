@@ -1,6 +1,6 @@
 from rest_framework import viewsets
-from .models import ServiceRequest
-from .serializers import CreateRequestSeializer
+# from .models import ServiceRequest
+from .serializers import CreateRequestSeializer , ServiceStatusLogSerializer
 from .permissions import CreateRequestOnlyCustomer , OwnerToSeeAllRequests , SingleRequestPermisiion , CancelRequestPermission , AvailableRequestPermission , AcceptRequestPermission , ProviderCurrentJobsPermission
 from rest_framework.decorators import action
 from provider.models import *
@@ -11,7 +11,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
 from provider.models import ProviderProfile
-from request.models import ServiceRequest
+from request.models import ServiceRequest , ServiceStatusLog
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 # from .serializers import ServiceRequestSerializer
@@ -59,7 +59,7 @@ class ServiceRequestViewSet(viewsets.ModelViewSet):
     @action(detail=False , methods=['GET'] , url_path='me')
     def myRequests(self , request):
         user=request.user
-        print("user belong to request " , user)
+        # print("user belong to request " , user)
         alluserrequest = ServiceRequest.objects.filter(customer=user, status__in=['pending', 'broadcasted', 'accepted', 'arrived', 'in_progress'])
         # for req in alluserrequest:
         #     print(req.status)
@@ -160,19 +160,98 @@ class ServiceRequestViewSet(viewsets.ModelViewSet):
         user = request.user
         try:
             provider_profile = user.ProviderProfile  # check related_name in model
+            # provider_profile=ProviderProfile.objects.get(user=user)
         except ProviderProfile.DoesNotExist:
             return Response({"detail": "Provider profile not found"}, status=404)
         requests = ServiceRequest.objects.filter(provider=provider_profile)
-        print(requests.query)
-        print(ServiceRequest.objects.filter(provider=provider_profile).count())
+        # print(requests.query)
+        # print(ServiceRequest.objects.filter(provider=provider_profile).count())
         serializer = CreateRequestSeializer(requests, many=True)
         return Response({
         "total_requests": requests.count(),
         "requests": serializer.data
         })
 
-#       python manage.py runserver
+    #   histoy of provider of the request   ....
+    @action(detail=False, methods=['GET'], url_path='provider/history' , permission_classes=[ProviderCurrentJobsPermission])
+    def provider_history(self, request):
+        user=request.user
+        #   first fetch provider profile related to the user 
+        try:
+            provider_profile=ProviderProfile.objects.get(user=user)
+        except ProviderProfile.DoesNotExist:
+            return Response({"detail": "Provider profile not found"}, status=404)
+        #   Now  fetch service request related to the provider profile    
+        service_request_of_provider=ServiceRequest.objects.filter(provider=provider_profile)
+        if not service_request_of_provider:
+            return Response({
+                "detail": "No service category of this provider ..."
+            }, status=404)
+        data=[]
+        total_services=0
+        for i in service_request_of_provider:
+            total_services+=1
+            data.append({
+                "id":i.id,
+                "price_estamited":i.price_estamited,
+                "final_price":i.final_price,
+                "requested_at":i.requested_at,
+                "accepted_at":i.accepted_at,
+                "compeleted_at":i.compeleted_at,
+                "service_category":i.service_category.name,
+            })
+            
+        return Response({
+            "total_services":total_services,
+            "Detail of all services":data
+        } , status= status.HTTP_200_OK)
 
+    @action(detail=False, methods=['GET'], url_path='customer/history' , permission_classes=[CreateRequestOnlyCustomer])
+    def customer_history(self, request):
+        user = request.user
+        service_requests = ServiceRequest.objects.filter(customer=user)
+        if not service_requests.exists():
+            return Response({"detail": "No service requests found"}, status=404)
+        data = []
+        for i in service_requests:
+            data.append({
+                "id": i.id,
+                "price_estimated": i.price_estamited,
+                "final_price": i.final_price,
+                "requested_at": i.requested_at,
+                "accepted_at": i.accepted_at,
+                "completed_at": i.compeleted_at,
+                "service_category": i.service_category.name,
+            })
+
+        return Response({
+        "total_services": service_requests.count(),
+        "data": data
+    })
+
+    @action(detail=True, methods=['GET'], url_path='logs')
+    def customer_history(self, request , id=None):
+        try:
+            service_id=ServiceRequest.objects.get(id=id)
+        except ServiceRequest.DoesNotExist:
+            return Response({
+                "message":"this UUID is not valid   ...."
+            } , status= status.HTTP_400_BAD_REQUEST)   
+
+        status_of_given_request=ServiceStatusLog.objects.filter(service_request=service_id)
+        if not status_of_given_request.exists():
+            return Response({
+                "message":"No Status log to this request   ...."
+            } , status= status.HTTP_400_BAD_REQUEST)  
+        serializer= ServiceStatusLogSerializer(data=status_of_given_request , many=True)
+        serializer.is_valid()
+        return Response({
+            "data":serializer.data
+        } , status=status.HTTP_200_OK)
+
+
+
+#       python manage.py runserver
 
 
 

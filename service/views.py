@@ -5,9 +5,9 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from .permissions import AdminAllowOnly
-from django_filters.rest_framework import DjangoFilterBackend
-# from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.filters import SearchFilter, OrderingFilter
+from provider.models import ProviderProfile
+# # from django_filters.rest_framework import DjangoFilterBackend
+# from rest_framework.filters import SearchFilter, OrderingFilter
 # Create your views here.
 
 class ServiceCategoryView(APIView):
@@ -88,6 +88,39 @@ class Deactivate_Service(APIView):
         singleservice.is_active=False
         singleservice.save()
         return Response("Deactivated successfully .....")        
-        
+
+class Deactivate_Service(APIView):
+    permission_classes=[AdminAllowOnly]
+    def get(self , request , id):
+        try:
+            singleservice=ServiceCategory.objects.get(id=id)
+        except ServiceCategory.DoesNotExist:
+            return Response({
+                "message":"No query related to this id ..."
+            },
+                status=status.HTTP_400_BAD_REQUEST
+        ) 
+        providersOfTheService=singleservice.ProviderProfile.all()
+        data=[]
+        total_providers=0
+        for i in providersOfTheService:
+            total_providers+=1
+            data.append({
+                "id":i.id,
+                "experience_years":i.experience_years,
+                "average_rating":i.average_rating,
+                "city":i.city
+            })
+        return Response({
+            "Total providers":total_providers,
+            "All Providers Data":data
+        } , status=status.HTTP_200_OK)    
+
+
+
+
+
+
+
 
     #   python manage.py runserver    

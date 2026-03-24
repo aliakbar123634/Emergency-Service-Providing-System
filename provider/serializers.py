@@ -30,3 +30,15 @@ class JobSerializer(serializers.ModelSerializer):
         model = Job
         fields = ['id','service','status','scheduled_start','scheduled_end','started_at','completed_at','price']
 
+
+
+class ProviderProfileSerializer(serializers.ModelSerializer):
+    cnic_image = serializers.ImageField(read_only=True)
+    class Meta:
+        model = ProviderProfile
+        fields = [
+            "id", "bio", "service", "experience_years", "cnic_number",
+            "cnic_image", "average_rating", "total_jobs_completed",
+            "is_available", "is_verified", "city", "latitude", "longitude",
+            "created_at"
+        ]

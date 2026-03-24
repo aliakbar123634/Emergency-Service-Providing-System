@@ -2,7 +2,7 @@
 from rest_framework import viewsets
 from . serializers import *
 from . models import *
-from . permissions import onlyUserpermission
+from . permissions import onlyUserpermission , AdminOnlyPermission
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.decorators import api_view , permission_classes
 from rest_framework.response import Response 
@@ -10,7 +10,9 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import get_user_model
 from rest_framework.views import APIView
+from  rest_framework.decorators import action
 User = get_user_model()
+
 
 
 
@@ -100,3 +102,30 @@ class WalletView(APIView):
         wallet=Wallet.objects.all()
         ser=WalletSerializer(wallet , many=True)
         return Response(ser.data , status=status.HTTP_200_OK)     
+    
+
+class AdminViewSet(viewsets.ModelViewSet):
+    queryset=CustomUserModel.objects.all()
+    serializer_class=PersonalSerializer
+    permission_classes=[AdminOnlyPermission] 
+    #   action to verify any user
+    @action(detail=True , methods=['PATCH'] , url_path='verify')  
+    def verify_any_user(self , request , pk=None):
+        try:
+            user_related_to_query=CustomUserModel.objects.get(id=pk)
+        except CustomUserModel.DoesNotExist:
+            return Response({
+                "Message": "User not found to the given query ...."
+            } , status=status.HTTP_400_BAD_REQUEST)
+        if user_related_to_query.is_verified:
+            return Response({
+                "message"  : "this user already verified ..."
+            })
+        user_related_to_query.is_verified=True
+        user_related_to_query.save()
+        return Response({
+                "message"  : "User Verified successfully    .........."
+        })        
+        
+
+      

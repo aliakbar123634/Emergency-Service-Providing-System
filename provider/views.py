@@ -33,9 +33,9 @@ class CustomerViewSet(viewsets.ModelViewSet):
     # Automatically set user when creating
     def perform_create(self, serializer):
         user=self.request.user
-        if CustomerProfile.objects.filter(user=user).exists:
+        if CustomerProfile.objects.filter(user=user).exists():
             raise ValidationError("You already have a profile.")
-        serializer.save(user=self.request.user)
+        serializer.save(user=user)
 
 #  @action is a decorator used inside a ViewSet to create custom API endpoints that are not part of the standard CRUD operations. 
     @action(detail=False, methods=['patch'], url_path='location')
@@ -138,7 +138,7 @@ class ProviderViewSet(viewsets.ModelViewSet):
                 {"error": "Profile not found"},
                 status=status.HTTP_404_NOT_FOUND
             )
-        jobs = profile.jobs.filter( status__in=['accepted', 'in_progress'],is_deleted=False )
+        jobs = profile.jobs.filter( status__in=['accepted', 'in_progress'], is_deleted=False )
         serializer = JobSerializer(jobs, many=True)
         return Response({
             "total_active_jobs": jobs.count(),
@@ -190,6 +190,47 @@ class ProviderViewSet(viewsets.ModelViewSet):
         "total_jobs": Total_jobs.count(),
         "total_earning": earning
         })
+    #   action to show provider   dashboard stats .......
+    @action(detail=False , methods=['GET'] , url_path='status')
+    def dashboard_stats(self , request):
+        user=request.user
+        profile=ProviderProfile.objects.filter(user=user).first()
+        if not profile:
+            return Response(
+                {"message" : "Profile not found"},
+                status=status.HTTP_404_NOT_FOUND
+            ) 
+        #   most important point services have one to many relation with provider so working with loop 
+        services_list = []
+        for s in profile.service.all():
+            services_list.append({
+                "id": s.id ,
+                "name":s.name
+                })
+        data=[]
+        data.append({
+            "id":profile.id,
+            "Profile-image":profile.profile_image.url if profile.profile_image else None,
+            "bio":profile.bio,
+            # "service":profile.service,
+            # "services": [{"id": s.id, "name": s.name} for s in profile.service.all()],
+            "services":services_list,
+            "experience_years":profile.experience_years,
+            "cnic_number":profile.cnic_number,
+            "cnic_image":profile.cnic_image.url if profile.cnic_image else None,
+            "average_rating":profile.average_rating,
+            "total_jobs_completed":profile.total_jobs_completed,
+            "is_available":profile.is_available,
+            "is_verified":profile.is_verified,
+            "city":profile.city,
+            "latitude":profile.latitude,
+            "longitude":profile.longitude,
+            "created_at":profile.created_at.isoformat(),
+        })
+        return Response({
+            "message" : data
+        } , status=status.HTTP_200_OK)   
+
     @action(detail=False , methods=['POST'] , url_path='verification')
     def verification_request(self , request):
         user=request.user
@@ -224,7 +265,38 @@ class ProviderViewSet(viewsets.ModelViewSet):
             "Profile-image":profile.profile_image.url if profile.profile_image else None,
             "cnic_image" :profile.cnic_image.url if profile.cnic_image else None
         })
-   
+    @action(detail=False , methods=['GET'] , url_path='analytics')
+    def providerAnalytics(self , request):
+        user = request.user
+        profile=ProviderProfile.objects.filter(user=user).first()
+        if not profile:
+            return Response(
+                {"message" : "Profile not found"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+ 
+        total_jobs = profile.jobs.count()
+        total_completed_job = profile.jobs.filter(status='completed').count()
+        total_active_job = profile.jobs.filter(status__in=['in_progress', 'accepted']).count()
+        total_cancelled_job = profile.jobs.filter(status='canceled').count()
+
+    # Assuming related_name='reviews' in Review model
+        reviews_related_to_profile = profile.Review.count()  # just count, for JSON-friendly
+
+        completed_jobs_qs = profile.jobs.filter(status='completed', is_deleted=False)
+        earning = completed_jobs_qs.aggregate(sum=Sum('price'))['sum'] or Decimal('0.00')        
+        data=[]
+        data.append({
+            "total_jobs": total_jobs,
+            "total_completed_job": total_completed_job,
+            "total_active_job": total_active_job,
+            "total_cancelled_job": total_cancelled_job,
+            "total_reviews": reviews_related_to_profile,
+            "earning": earning
+        })
+        return Response({
+            "analytics of user":data
+        } , status=status.HTTP_200_OK)
 #    python manage.py runserver    
 
 

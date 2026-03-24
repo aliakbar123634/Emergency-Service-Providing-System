@@ -15,11 +15,8 @@ class RegistrationSerializer(serializers.ModelSerializer):
         return attrs 
     def create(self, validated_data):
         password = validated_data.pop('password')
-        # User create
-        user = CustomUserModel.objects.create_user(password=password, **validated_data)
-        
-        # Send verification email after user creation
-
+       # User create
+        user = CustomUserModel.objects.create_user(password=password, **validated_data)        
         return user
 
 class LoginSerializer(serializers.Serializer):

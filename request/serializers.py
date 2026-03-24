@@ -9,6 +9,12 @@ class CreateRequestSeializer(serializers.ModelSerializer):
         read_only_fields = ['id' ,'created_at' ,'customer', 'updated_at' , 'requested_at']
 
 
+class ServiceStatusLogSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model=ServiceStatusLog
+        fields=['id' , 'service_request', 'changed_by' , 'notes' , 'status' , 'created_at' ]
+        # read_only_fields = ['id' ,'created_at' ,'customer', 'updated_at' , 'requested_at']
 
 
 #    python manage.py runserver       

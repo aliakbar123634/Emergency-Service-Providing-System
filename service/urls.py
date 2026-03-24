@@ -9,6 +9,7 @@ urlpatterns = [
     # only admin can post patch or delete a single service normal user can see single service
     path('service/<int:id>' , views.SingleServiceCategoryView.as_view() , name="service"),
     # only admin can activate or deactivate a service
-    path('service/<int:id>/activate/' , views.Activate_Service.as_view(), name="service"),
+    path('service/<int:id>/activate/' , views.Activate_Service.as_view(), name="activate"),
     path('service/<int:id>/deactivate/' , views.Deactivate_Service.as_view(), name="deactivate"),
+    path('service/<int:id>/providers/' , views.Deactivate_Service.as_view(), name="providers"),
 ]

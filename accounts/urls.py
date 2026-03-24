@@ -4,6 +4,7 @@ from rest_framework.routers import DefaultRouter
 from . import views
 router=DefaultRouter()
 router.register('registration' , views.RegiatrationViewset)
+router.register('admin-user' , views.AdminViewSet , basename='admin/users')
 
 urlpatterns = [
     path('' , include(router.urls)) , 
@@ -11,4 +12,5 @@ urlpatterns = [
     path('logout/' , views.LogOutView , name='logout'),
     path('user/<uuid:id>' , views.PersonalViewclass.as_view() , name='user'),
     path('wallet/' , views.WalletView.as_view() , name='wallet')
-]
+]     
+   #    python manage.py runserver

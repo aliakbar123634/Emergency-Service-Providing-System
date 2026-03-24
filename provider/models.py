@@ -57,8 +57,7 @@ class ProviderProfile(models.Model):
 class Job(models.Model):
     customer = models.ForeignKey('CustomerProfile', on_delete=models.CASCADE, related_name="jobs")
     provider = models.ForeignKey('ProviderProfile', on_delete=models.CASCADE, related_name="jobs")
-    service = models.ForeignKey(ServiceCategory, on_delete=models.SET_NULL, null=True)
-    
+    service = models.ForeignKey(ServiceCategory, on_delete=models.SET_NULL, null=True)   
     STATUS_CHOICES = (
         ('pending', 'Pending'),
         ('accepted', 'Accepted'),
@@ -67,16 +66,12 @@ class Job(models.Model):
         ('canceled', 'Canceled'),
     )
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
-
     scheduled_start = models.DateTimeField(default=datetime.now)
-    scheduled_end = models.DateTimeField(null=True, blank=True)
-    
+    scheduled_end = models.DateTimeField(null=True, blank=True)    
     started_at = models.DateTimeField(null=True, blank=True)
-    completed_at = models.DateTimeField(null=True, blank=True)
-    
+    completed_at = models.DateTimeField(null=True, blank=True)   
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     is_deleted = models.BooleanField(default=False)
-
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     

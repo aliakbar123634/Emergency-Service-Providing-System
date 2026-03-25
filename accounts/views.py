@@ -9,19 +9,16 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import get_user_model
-from rest_framework.views import APIView
 from  rest_framework.decorators import action
 User = get_user_model()
-  
-from django.http import HttpResponse
+from django.utils import timezone  
 from django.core.mail import send_mail
 import uuid
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from utils.email import send_verification_email
-
-
+from utils.email import send_reset_email
 
 #  this is my firstend point which will send ka verification token on the email of the authenticated user 
 class SendVerificationEmail(APIView):
@@ -54,6 +51,88 @@ class VerifyEmail(APIView):
         return Response({
             "message": "Email verified"
         })
+
+
+
+#  this end point work same as work verification send email endpoints work we will simply send a gmail and new email with the token
+class ForgotPasswordView(APIView):
+    def post(self, request):
+        email = request.data.get("email")
+        user = CustomUserModel.objects.filter(
+            email=email
+        ).first()
+        if not user:
+            return Response(
+                {"error": "User not found"},
+                status=404
+            )
+        token = str(uuid.uuid4())
+        user.reset_token = token
+        user.reset_token_created_at = timezone.now()
+        user.save()
+        send_reset_email(user.email, token)
+        return Response({
+            "message": "Reset email sent"
+        })
+
+
+#  in this end point we will take the token from emial we will receive and then pass new password and token to chane the password .....
+class ResetPasswordView(APIView):
+    def post(self, request):
+        token = request.data.get("token")
+        new_password = request.data.get("new_password")
+        if not token or not new_password:
+            return Response(
+                {"error": "token and new_password required"},
+                status=400,
+            )
+        user = CustomUserModel.objects.filter(
+            reset_token=token
+        ).first()
+        if not user:
+            return Response(
+                {"error": "Invalid token"},
+                status=400,
+            )
+        #expire check (30 min)
+        if user.reset_token_created_at:
+            diff = timezone.now() - user.reset_token_created_at
+            if diff.total_seconds() > 1800:
+                return Response(
+                    {"error": "Token expired"},
+                    status=400,
+                )
+        user.set_password(new_password)
+        user.reset_token = None
+        user.reset_token_created_at = None
+        user.save()
+        return Response(
+            {"message": "Password reset successful"}
+        )
+
+class ChangePasswordView(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self, request):
+        user = request.user
+        old_password = request.data.get("old_password")
+        new_password = request.data.get("new_password")
+        if not old_password or not new_password:
+            return Response(
+                {"error": "old_password and new_password required"},
+                status=400,
+            )
+        if not user.check_password(old_password):
+            return Response(
+                {"error": "Old password incorrect"},
+                status=400,
+            )
+        user.set_password(new_password)
+        user.save()
+        return Response(
+            {"message": "Password changed successfully"}
+        )
+
+
 
 
 

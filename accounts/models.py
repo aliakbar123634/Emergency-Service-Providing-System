@@ -36,6 +36,8 @@ class CustomUserModel(AbstractUser):
     full_name=models.CharField(max_length=100)
     role=models.CharField(max_length=30 , choices=role, default='customer')
     verification_token = models.CharField(max_length=100,null=True,blank=True)
+    reset_token = models.CharField(max_length=100,null=True,blank=True)
+    reset_token_created_at = models.DateTimeField(null=True,blank=True)
     is_verified=models.BooleanField(default=False)
     created_at=models.DateTimeField(auto_now_add=True)    
     updated_at=models.DateTimeField(auto_now=True)

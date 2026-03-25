@@ -56,3 +56,17 @@ class ProviderCurrentJobsPermission(BasePermission):
 
     def has_permission(self, request, view):
         return request.user.role == "provider"
+
+
+class StatusLogPermission(BasePermission):
+    def has_object_permission(self, request, view, obj):
+
+    # customer                                    service_request
+        if request.user.role == "customer" and obj.service_request.customer == request.user:
+            return True
+
+    # provider
+        if request.user.role == "provider" and obj.service_request.provider and obj.service_request.provider.user == request.user:
+            return True
+
+        return False

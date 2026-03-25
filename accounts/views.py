@@ -12,11 +12,50 @@ from django.contrib.auth import get_user_model
 from rest_framework.views import APIView
 from  rest_framework.decorators import action
 User = get_user_model()
+  
+from django.http import HttpResponse
+from django.core.mail import send_mail
+import uuid
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from utils.email import send_verification_email
 
 
 
+#  this is my firstend point which will send ka verification token on the email of the authenticated user 
+class SendVerificationEmail(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self, request):
+        user = request.user
+        token = str(uuid.uuid4())
+        user.verification_token = token
+        user.save()
+        send_verification_email(user.email, token)
+        return Response({
+            "message": "Verification email sent"
+        })
 
-# Create your views here.
+#   this is the second endpoint which will verify the gmail through the token we send by using send verification email we will take that token and pass in the body of this endpoint ....
+class VerifyEmail(APIView):
+    def post(self, request):
+        token = request.data.get("token")
+        user = CustomUserModel.objects.filter(
+            verification_token=token
+        ).first()
+        if not user:
+            return Response(
+                {"error": "Invalid token"},
+                status=400
+            )
+        user.is_verified = True
+        user.verification_token = None
+        user.save()
+        return Response({
+            "message": "Email verified"
+        })
+
+
 
 class RegiatrationViewset(viewsets.ModelViewSet):
     queryset=CustomUserModel.objects.all()
@@ -129,3 +168,6 @@ class AdminViewSet(viewsets.ModelViewSet):
         
 
       
+
+
+      #    python manage.py runserver

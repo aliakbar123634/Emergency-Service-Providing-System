@@ -79,18 +79,9 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'main.wsgi.application'
-# AUTH_USER_MODEL='accounts.CustomUserModel'
+
 AUTH_USER_MODEL = 'accounts.CustomUserModel'
 
-# Database
-# https://docs.djangoproject.com/en/6.0/ref/settings/#databases
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
 
 DATABASES = {
     'default': {
@@ -162,9 +153,21 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
-#  Development ke liye terminal me print karne ke liye:
 
 
-#    Production me (Gmail/SendGrid/Mailgun):
+#   SMTP setup for sending email 
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+
+EMAIL_HOST = "smtp.gmail.com"
+
+EMAIL_PORT = 587
+
+EMAIL_USE_TLS = True
+
+EMAIL_HOST_USER = "webtesting9870@gmail.com"
+
+EMAIL_HOST_PASSWORD = "hfmwhguelumoqrho"
+
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 #   python manage.py runserver

@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 # from .models import ServiceRequest
 from .serializers import CreateRequestSeializer , ServiceStatusLogSerializer
-from .permissions import CreateRequestOnlyCustomer , OwnerToSeeAllRequests , SingleRequestPermisiion , CancelRequestPermission , AvailableRequestPermission , AcceptRequestPermission , ProviderCurrentJobsPermission
+from .permissions import CreateRequestOnlyCustomer , OwnerToSeeAllRequests , SingleRequestPermisiion , CancelRequestPermission , AvailableRequestPermission , AcceptRequestPermission , ProviderCurrentJobsPermission , StatusLogPermission
 from rest_framework.decorators import action
 from provider.models import *
 from accounts.models import *
@@ -229,7 +229,7 @@ class ServiceRequestViewSet(viewsets.ModelViewSet):
         "data": data
     })
 
-    @action(detail=True, methods=['GET'], url_path='logs')
+    @action(detail=True, methods=['GET'], url_path='logs' , permission_classes=[StatusLogPermission])
     def customer_history(self, request , id=None):
         try:
             service_id=ServiceRequest.objects.get(id=id)
@@ -239,6 +239,10 @@ class ServiceRequestViewSet(viewsets.ModelViewSet):
             } , status= status.HTTP_400_BAD_REQUEST)   
 
         status_of_given_request=ServiceStatusLog.objects.filter(service_request=service_id)
+        for log in status_of_given_request:
+            self.check_object_permissions(request, log)
+        # self.check_object_permissions(request,status_of_given_request)
+
         if not status_of_given_request.exists():
             return Response({
                 "message":"No Status log to this request   ...."

@@ -14,3 +14,8 @@ class AdminOnlyPermission(BasePermission):
             user.is_authenticated and
             user.role=='admin'
         )    
+
+#   permission for verified users .....
+class IsVerifiedUser(BasePermission):
+    def has_permission(self, request, view):
+        return request.user and request.user.is_authenticated and request.user.is_verified    

@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     "django_filters",
+    # 'django.contrib.gis',    # from 
     'accounts',
     "rest_framework_simplejwt.token_blacklist",
     "provider",
@@ -83,9 +84,13 @@ WSGI_APPLICATION = 'main.wsgi.application'
 AUTH_USER_MODEL = 'accounts.CustomUserModel'
 
 
+#   python manage.py makemigrations 
+#   python manage.py migrate
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
+        # 'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'NAME': 'em1',      # jo database aap ne pgAdmin me banaya
         'USER': 'postgres',
         'PASSWORD': 'aliali',

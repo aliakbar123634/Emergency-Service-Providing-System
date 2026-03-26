@@ -132,10 +132,6 @@ class ChangePasswordView(APIView):
             {"message": "Password changed successfully"}
         )
 
-
-
-
-
 class RegiatrationViewset(viewsets.ModelViewSet):
     queryset=CustomUserModel.objects.all()
     serializer_class=RegistrationSerializer

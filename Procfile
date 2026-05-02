@@ -1,1 +1,1 @@
-web: gunicorn main.wsgi --workers 4 --bind 0.0.0.0:$PORT
+web: gunicorn main.wsgi:application --workers 4 --bind 0.0.0.0:$PORT --log-file -

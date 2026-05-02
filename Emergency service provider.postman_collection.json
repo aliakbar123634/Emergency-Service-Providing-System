@@ -1,0 +1,521 @@
+{
+  "info": {
+    "_postman_id": "904a02c6-c64d-4cfc-a682-b0cb6afba468",
+    "name": "Emergency service provider",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "50771205",
+    "_collection_link": "https://go.postman.co/collection/50771205-904a02c6-c64d-4cfc-a682-b0cb6afba468?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Registration viewset",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"email\": \"testuser2@example.com\",\r\n  \"password\": \"123\",\r\n  \"password2\": \"123\",\r\n  \"phone\": \"1234567890\",\r\n  \"full_name\": \"Test User\",\r\n  \"role\": \"customer\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/registration/",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "registration",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Login view",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "",
+            "value": "",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "// {\r\n//     \"email\":\"razaa@gmail.com\",\r\n//     \"password\":\"123\"\r\n// }    \r\n\r\n// {\r\n//  \"email\":\"a@gmail.com\",\r\n//  \"password\":\"123\"\r\n// }\r\n\r\n// {\r\n//   \"email\": \"testuser1@example.com\",\r\n//   \"password\": \"123\"\r\n// }\r\n\r\n// {\r\n//   \"email\": \"testuser2@example.com\",\r\n//   \"password\": \"123\"\r\n// }\r\n{\r\n  \"email\": \"bhai@gmail.com\",\r\n  \"password\": \"123\"\r\n}\r\n// {\r\n//   \"email\": \"ali@gmail.com\",\r\n//   \"password\": \"123\"\r\n// }  ",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/login/",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "login",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "logout endpoint",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzczNjUzNDM3LCJpYXQiOjE3NzI3ODk0MzcsImp0aSI6ImJjMGI3N2YyY2RkMTQzY2E4M2M5NmZkZWUzYjRhZmZiIiwidXNlcl9pZCI6IjA4MGYzZGQyLTJhYTAtNGM1Ny05YzI0LWZjNjM0MmY1MDBlNSJ9.uDWUyxxzPScD9vTIa-Wrar3IxzuABSbA7j7953G3e-o",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"refresh\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc3NDUxNzQzNywiaWF0IjoxNzcyNzg5NDM3LCJqdGkiOiIwNjJhMTllODA5NTg0M2IxOWVlYTMyYmFkZTIxNDg4OSIsInVzZXJfaWQiOiIwODBmM2RkMi0yYWEwLTRjNTctOWMyNC1mYzYzNDJmNTAwZTUifQ.JH8n7nwYplZjUno8jFcsp2SBE4yrCjr1lyUWgeo_rxk\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/logout/",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "logout",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "refresh token endpoint",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"refresh\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc3NDUxNzYxOSwiaWF0IjoxNzcyNzg5NjE5LCJqdGkiOiI1ZGMyMzRlNDY3ZmU0OWQyOTZkMGMyMGYxOWNjY2EyZiIsInVzZXJfaWQiOiIwODBmM2RkMi0yYWEwLTRjNTctOWMyNC1mYzYzNDJmNTAwZTUifQ.bUr1BB92qfuCAoinaEctlia9gklBKmV06Z07ORr6fCY\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/token/refresh/",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "token",
+            "refresh",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "email verify",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"token\": \"3DeyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzczOTg1NTM3LCJpYXQiOjE3NzMxMjE1MzcsImp0aSI6ImU0NDI2YTBjZGQwMTRhNzg5ZmY5ZDViNDZiYjI1YmQ0IiwidXNlcl9pZCI6ImM3OTE5ZThiLTAzZWMtNGJmZC05YmJmLTM2OTMzOTkwM2Q1ZiJ9.bRJNg6mezgjf5lzsf7dQ4GqOFwGitpJMoSvLGF-p2mE\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/auth/verify-email/",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "auth",
+            "verify-email",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "sent message verifaction",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzczNjYxMTc1LCJpYXQiOjE3NzI3OTcxNzUsImp0aSI6IjA5YWMyMmU3NzBhMzRkODc5ZWQwMmM3MzdlOTQwOTg1IiwidXNlcl9pZCI6IjM0ZDhhNjIxLTJlOGItNGNkZC05MzE1LWRjYTc4MTU5MTlhOCJ9.NKW1nlimzny0bPAjccfcD5pWLZueuzooZBqECUw_4vQ",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "// {\r\n//  \"email\": \"razaa@gmail.com\"\r\n// }\r\n\r\n{\r\n  \"email\": \"testuser2@example.com\"\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/auth/send-verification-email/",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "auth",
+            "send-verification-email",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "user information",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzczOTk0MDYyLCJpYXQiOjE3NzMxMzAwNjIsImp0aSI6Ijk5OWM3MGEwMzgzNDQ2ZDA4ZjU4OGU1MDgzN2ZlYjJhIiwidXNlcl9pZCI6ImM3OTE5ZThiLTAzZWMtNGJmZC05YmJmLTM2OTMzOTkwM2Q1ZiJ9.kAyPUUCQ9dbLutTcHi2J6Gs3l1NowyBHI_T979u1U_k",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"full_name\": \"Updated Name\",\r\n    \"phone\": \"036467654321\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/user/c7919e8b-03ec-4bfd-9bbf-369339903d5f",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "user",
+            "c7919e8b-03ec-4bfd-9bbf-369339903d5f"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "service category for get and post",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"name\": \"books\",\r\n    \"description\": \"i have alot of books that i sell\",\r\n    \"base_price\": \"1500.00\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/service/",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "service",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "active and deactive service",
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/service/1/activate/",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "service",
+            "1",
+            "activate",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Customer Profile provider App",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzc0MDg0MjM1LCJpYXQiOjE3NzMyMjAyMzUsImp0aSI6IjY2YzgyYmI4NDNjOTQ1OWRiZjhmMDZhODI2MWEwYmYzIiwidXNlcl9pZCI6IjVmMjIxOGU2LTI3ZGItNGI1MC05NDYxLWU1OGFkODZlMTk3ZSJ9.Z3LCZBUferwKmh1rrwWG69PuJoa2fkQ4WHW7MGA9j0M",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/customer/profile/1/",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "customer",
+            "profile",
+            "1",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "provider profile provider app",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzc0MTU0OTMxLCJpYXQiOjE3NzMyOTA5MzEsImp0aSI6IjU3N2UwZmUwZjkxZTQwZDdiMTFiNDRlMTg4ZjQ4OTI1IiwidXNlcl9pZCI6IjlhYTJmY2VjLTk3ZjEtNGUxOS04NzZlLWZmOTBiYTA0ODJiNSJ9.aaYvW49vtrgmVAvt_HQlTIgTswGS7iCO_ayfzErKpm0",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n \"is_available\": true\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/provider/profile/active_jobs/",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "provider",
+            "profile",
+            "active_jobs",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Request api",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzc0MzI4NzYxLCJpYXQiOjE3NzM0NjQ3NjEsImp0aSI6ImFjMWMzZTU5NGRmZTRkZGFhMWUzMTExM2JjODA2NzA1IiwidXNlcl9pZCI6ImI2NDA1Yzc0LWY3OTAtNDAxYi05MjUyLTQ3NjUwODI4YzZkMyJ9.PDOi3WutHm7pF8jYuD5460vCiEw9zPPxcM7HqlbBIkY",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"customer\": 1,\r\n    \"service_category\": 2,\r\n    \"latitude\": 31.5204,\r\n    \"longitude\": 74.3587,\r\n    \"adress_text\": \"Lahore Pakistan\",\r\n    \"price_estimated\": 1000,\r\n    \"final_price\": 1200\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/request/create/",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "request",
+            "create",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "payments app",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "review app",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "notification app",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "admin endpoints for accounts app",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "Send verification Email",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "forgot password endpoint",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "reset password",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "change password login user",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    }
+  ]
+}
